@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IaMail - Categorizador de Emails</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+  <!-- Modal de Autenticação -->
+  <div id="authModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-gray-900 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+      <div class="text-center mb-6">
+        <div
+          class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i data-feather="shield" class="w-8 h-8 text-white"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-2">Acesso ao Sistema</h2>
+        <p class="text-gray-400">Qual é a empresa que está conduzindo o processo seletivo?</p>
+      </div>
+
+      <form id="authForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Resposta</label>
+          <input type="password" id="passwordInput"
+            class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Digite a resposta..." autocomplete="off">
+        </div>
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+          Acessar Sistema
+        </button>
+      </form>
+
+      <div id="authError" class="hidden mt-4 p-3 bg-red-900 border border-red-700 rounded-lg">
+        <p class="text-red-300 text-sm text-center">Resposta incorreta. Tente novamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <i data-feather="mail" class="w-5 h-5 text-white"></i>
+          </div>
+          <h1 class="text-xl font-bold text-gray-900">IaMail</h1>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <button id="addEmailBtn"
+            class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+            <i data-feather="plus" class="w-4 h-4 inline mr-2"></i>
+            Adicionar Email
+          </button>
+          <button id="logoutBtn" class="text-gray-500 hover:text-gray-700 transition-colors duration-200">
+            <i data-feather="log-out" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Emails Cadastrados</h2>
+        <p class="text-sm text-gray-500">Gerencie os emails do processo seletivo</p>
+      </div>
+
+      <div id="emailList" class="divide-y divide-gray-200">
+        <!-- Emails serão inseridos aqui dinamicamente -->
+      </div>
+
+      <div id="emptyState" class="px-6 py-12 text-center">
+        <i data-feather="inbox" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum email cadastrado</h3>
+        <p class="text-gray-500">Clique em "Adicionar Email" para começar</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Adicionar Email -->
+  <div id="addEmailModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-semibold text-gray-900">Adicionar Email</h3>
+        <button id="closeAddModal" class="text-gray-400 hover:text-gray-600">
+          <i data-feather="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="addEmailForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <input type="email" id="emailInput"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="exemplo@empresa.com" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Nome</label>
+          <input type="text" id="nameInput"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Nome completo" required>
+        </div>
+        <div class="flex space-x-3 pt-4">
+          <button type="button" id="cancelAddBtn"
+            class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+            Cancelar
+          </button>
+          <button type="submit"
+            class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200">
+            Adicionar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='auth.js') }}"></script>
+  <script src="{{ url_for('static', filename='emails.js') }}"></script>
+  <script src="{{ url_for('static', filename='ui.js') }}"></script>
+</body>
+
+</html>

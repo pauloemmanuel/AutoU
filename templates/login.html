@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IaMail - Login</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📧</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+        <div
+          class="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <i data-feather="mail" class="w-10 h-10 text-white"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">IaMail</h2>
+        <p class="text-gray-600">Categorizador de Emails</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+        <div class="text-center mb-6">
+          <div
+            class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-feather="shield" class="w-8 h-8 text-white"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Acesso ao Sistema</h3>
+          <p class="text-gray-600">Qual é a empresa que está conduzindo o processo seletivo?</p>
+        </div>
+
+        <form id="authForm" class="space-y-6">
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Resposta</label>
+            <input type="password" id="password"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              placeholder="Digite a resposta..." required autocomplete="off">
+          </div>
+
+          <div id="authError" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p class="text-red-600 text-sm text-center">Resposta incorreta. Tente novamente.</p>
+          </div>
+
+          <button type="submit"
+            class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg">
+            Acessar Sistema
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Inicializar ícones Feather
+    if (typeof feather !== 'undefined') {
+      feather.replace();
+    }
+
+    // Verificar se já está autenticado
+    document.addEventListener('DOMContentLoaded', () => {
+      const isAuthenticated = localStorage.getItem('iamail_authenticated');
+      if (isAuthenticated === 'true') {
+        window.location.href = '/';
+      }
+
+      document.getElementById('password').focus();
+    });
+
+    // Autenticação
+    document.getElementById('authForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const password = document.getElementById('password').value.toLowerCase();
+      const authError = document.getElementById('authError');
+
+      if (password === 'autou') {
+        localStorage.setItem('iamail_authenticated', 'true');
+        localStorage.setItem('iamail_user_id', Date.now().toString());
+        window.location.href = '/';
+      } else {
+        authError.classList.remove('hidden');
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+    });
+
+    // Atalho Enter
+    document.getElementById('password').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('authForm').dispatchEvent(new Event('submit'));
+      }
+    });
+  </script>
+</body>
+
+</html>

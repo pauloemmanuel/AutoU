@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IaMail - Dashboard</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📧</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <i data-feather="mail" class="w-5 h-5 text-white"></i>
+          </div>
+          <h1 class="text-xl font-bold text-gray-900">IaMail</h1>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <button id="logoutBtn" class="text-gray-500 hover:text-gray-700 transition-colors duration-200">
+            <i data-feather="log-out" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex justify-center items-center min-h-[600px]">
+      <div class="w-full max-w-4xl">
+
+        <!-- Área de Erro -->
+        <div id="errorArea" class="hidden mb-6">
+          <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <div class="flex items-start space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <i data-feather="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-red-800 mb-2">Erro na Análise</h3>
+                <p id="errorMessage" class="text-red-700 mb-4"></p>
+                <div class="flex space-x-3">
+                  <button id="retryBtn"
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
+                    Tentar Novamente
+                  </button>
+                  <button id="dismissErrorBtn"
+                    class="text-red-600 hover:text-red-800 transition-colors duration-200 text-sm font-medium">
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Área de Resultado -->
+        <div id="resultArea" class="hidden mb-6">
+          <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-900">Resultado da Análise</h3>
+              <button id="closeResultBtn" class="text-gray-400 hover:text-gray-600 transition-colors duration-200">
+                <i data-feather="x" class="w-5 h-5"></i>
+              </button>
+            </div>
+            <div id="resultContent"></div>
+          </div>
+        </div>
+
+        <div
+          class="border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center hover:border-gray-400 transition-colors duration-200">
+          <div class="space-y-6 main-content">
+            <div class="flex justify-center">
+              <div
+                class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <i data-feather="upload" class="w-8 h-8 text-white"></i>
+              </div>
+            </div>
+
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 mb-2">Adicionar Email</h2>
+              <p class="text-gray-600">Faça upload de um arquivo ou digite o texto diretamente</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <button id="uploadPdfBtn"
+                class="flex items-center justify-center px-6 py-3 border border-red-300 text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors duration-200">
+                <i data-feather="file-text" class="w-5 h-5 mr-2"></i>
+                PDF
+              </button>
+              <button id="uploadTxtBtn"
+                class="flex items-center justify-center px-6 py-3 border border-blue-300 text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200">
+                <i data-feather="file-text" class="w-5 h-5 mr-2"></i>
+                TXT
+              </button>
+              <button id="textInputBtn"
+                class="flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                <i data-feather="edit-3" class="w-5 h-5 mr-2"></i>
+                Texto Direto
+              </button>
+            </div>
+
+            <div class="hidden" id="fileUploadArea">
+              <input type="file" id="fileInput" class="hidden" accept=".pdf,.txt">
+              <div class="mt-4">
+                <label for="fileInput" class="cursor-pointer">
+                  <div
+                    class="px-6 py-4 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-400 transition-colors duration-200">
+                    <p class="text-blue-600 font-medium">Clique para selecionar arquivo</p>
+                    <p class="text-sm text-gray-500 mt-1">ou arraste e solte aqui</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="hidden" id="textInputArea">
+              <div class="mt-4 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2 text-left">Assunto</label>
+                  <input type="text" id="emailSubjectInput"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Digite o assunto do email">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2 text-left">Conteúdo</label>
+                  <textarea id="emailContentInput" rows="8"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    placeholder="Digite o conteúdo do email"></textarea>
+                </div>
+                <button id="processTextBtn"
+                  class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200">
+                  Processar Email
+                </button>
+              </div>
+            </div>
+
+            <div class="hidden" id="fileInfo">
+              <div class="bg-gray-50 rounded-lg p-4">
+                <p class="text-sm text-gray-600">Arquivo selecionado: <span id="selectedFileName"
+                    class="font-medium text-gray-900"></span></p>
+                <button id="processFileBtn"
+                  class="mt-3 w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200">
+                  Processar Arquivo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="{{ url_for('static', filename='ui.js') }}"></script>
+  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const isAuthenticated = localStorage.getItem('iamail_authenticated');
+      if (isAuthenticated !== 'true') {
+        window.location.href = '/login';
+        return;
+      }
+
+      if (typeof feather !== 'undefined') {
+        feather.replace();
+      }
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('iamail_authenticated');
+        localStorage.removeItem('iamail_user_id');
+        window.location.href = '/login';
+      });
+
+      // Função para mostrar erro
+      window.showError = function (message) {
+        const errorArea = document.getElementById('errorArea');
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.textContent = message;
+        errorArea.classList.remove('hidden');
+
+        // Scroll para o topo para mostrar o erro
+        errorArea.scrollIntoView({ behavior: 'smooth' });
+      };
+
+      // Função para esconder erro
+      window.hideError = function () {
+        document.getElementById('errorArea').classList.add('hidden');
+      };
+
+      // Função para mostrar resultado
+      window.showResult = function (content) {
+        const resultArea = document.getElementById('resultArea');
+        const resultContent = document.getElementById('resultContent');
+        resultContent.innerHTML = content;
+        resultArea.classList.remove('hidden');
+
+        // Scroll para o resultado
+        resultArea.scrollIntoView({ behavior: 'smooth' });
+
+        // Atualiza ícones
+        if (typeof feather !== 'undefined') {
+          feather.replace();
+        }
+      };
+
+      // Função para esconder resultado
+      window.hideResult = function () {
+        document.getElementById('resultArea').classList.add('hidden');
+      };
+
+      // Event listeners para botões de erro e resultado
+      document.getElementById('dismissErrorBtn').addEventListener('click', hideError);
+      document.getElementById('closeResultBtn').addEventListener('click', hideResult);
+      document.getElementById('retryBtn').addEventListener('click', () => {
+        hideError();
+        // Aqui você pode implementar a lógica de retry
+      });
+    });
+  </script>
+</body>
+
+</html>
