@@ -82,11 +82,6 @@ class DashboardManager {
                 body: formData
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Erro ao processar arquivo');
-            }
-
             const result = await response.json();
             this.showResult(result);
             
@@ -118,11 +113,6 @@ class DashboardManager {
                 body: JSON.stringify({ subject, content })
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Erro ao processar texto');
-            }
-
             const result = await response.json();
             this.showResult(result);
             
@@ -135,10 +125,8 @@ class DashboardManager {
     }
 
     showResult(result) {
-        const category = result.category;
-        const confidence = result.confidence;
-        const reason = result.reason;
-        const extractedText = result.extracted_text;
+        const classification = result.classification;
+        const response = result.response;
         
         // Remove resultados anteriores
         const existingResult = document.querySelector('.result-card');
@@ -158,28 +146,20 @@ class DashboardManager {
                 <div class="text-center">
                     <h2 class="text-2xl font-bold text-gray-900 mb-2">Resultado da Análise</h2>
                     <div class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
-                        category === 'Produtivo' ? 'bg-green-100 text-green-800' :
-                        category === 'Improdutivo' ? 'bg-red-100 text-red-800' :
+                        classification === 'produtivo' ? 'bg-green-100 text-green-800' :
+                        classification === 'improdutivo' ? 'bg-red-100 text-red-800' :
                         'bg-gray-100 text-gray-800'
                     } animate-pulse">
-                        ${category}
+                        ${classification.charAt(0).toUpperCase() + classification.slice(1)}
                     </div>
                 </div>
                 
                 <div class="space-y-4">
                     <div class="text-center">
-                        <p class="text-sm text-gray-600">Confiança: <span class="font-medium text-gray-900">${Math.round(confidence * 100)}%</span></p>
-                        <p class="text-sm text-gray-600 mt-1">${reason}</p>
+                        <p class="text-sm text-gray-600 mt-1">${response}</p>
                     </div>
-                    
-                    ${extractedText ? `
-                        <div class="border-t pt-4">
-                            <h4 class="text-sm font-medium text-gray-700 mb-2">Texto Analisado:</h4>
-                            <div class="bg-gray-50 rounded-lg p-3 max-h-40 overflow-y-auto">
-                                <p class="text-sm text-gray-600">${extractedText}</p>
-                            </div>
-                        </div>
-                    ` : ''}
+                </div>
+                
                 </div>
                 
                 <div class="text-center">
@@ -264,11 +244,10 @@ class DashboardManager {
             if (show) {
                 button.disabled = true;
                 button.innerHTML = `
-                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Processando...
                 `;
             } else {
                 button.disabled = false;

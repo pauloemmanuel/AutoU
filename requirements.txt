@@ -1,6 +1,11 @@
 huggingface_hub
 flask
+python-dotenv
 PyPDF2
 transformers>=4.30.0
 torch>=2.0.0
 numpy>=1.24.0
+datasets>=2.0.0
+accelerate>=0.26.0
+scikit-learnce_hub
+scikit-learn

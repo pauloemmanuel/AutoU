@@ -22,23 +22,19 @@ def process_pdf():
     try:
         if 'file' not in request.files:
             return jsonify({'error': 'Nenhum arquivo enviado'}), 400
-        
+
         file = request.files['file']
         if file.filename == '':
             return jsonify({'error': 'Nenhum arquivo selecionado'}), 400
-        
+
         if not file.filename.lower().endswith('.pdf'):
             return jsonify({'error': 'Arquivo deve ser um PDF'}), 400
-        
-        # Lê o arquivo e passa para o controller
+
         file_content = file.read()
-        result = email_controller.process_pdf_file(file_content)
-        
-        if not result.get('success', False):
-            return jsonify(result), 400
-        
+        result = email_controller.process_file(file_content, 'pdf')
+
         return jsonify(result)
-        
+
     except Exception as e:
         return jsonify({'error': f'Erro ao processar PDF: {str(e)}'}), 500
 
@@ -48,23 +44,19 @@ def process_txt():
     try:
         if 'file' not in request.files:
             return jsonify({'error': 'Nenhum arquivo enviado'}), 400
-        
+
         file = request.files['file']
         if file.filename == '':
             return jsonify({'error': 'Nenhum arquivo selecionado'}), 400
-        
+
         if not file.filename.lower().endswith('.txt'):
             return jsonify({'error': 'Arquivo deve ser um TXT'}), 400
-        
-        # Lê o arquivo e passa para o controller
+
         file_content = file.read()
-        result = email_controller.process_txt_file(file_content)
-        
-        if not result.get('success', False):
-            return jsonify(result), 400
-        
+        result = email_controller.process_file(file_content, 'txt')
+
         return jsonify(result)
-        
+
     except Exception as e:
         return jsonify({'error': f'Erro ao processar TXT: {str(e)}'}), 500
 
@@ -79,11 +71,7 @@ def process_text():
         if not content:
             return jsonify({'error': 'Conteúdo do email é obrigatório'}), 400
         
-        # Passa para o controller processar
         result = email_controller.process_direct_text(subject, content)
-        
-        if not result.get('success', False):
-            return jsonify(result), 400
         
         return jsonify(result)
         
